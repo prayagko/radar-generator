@@ -1,1 +1,1 @@
-Generate radars a la Statsbomb
+Made using React and D3
