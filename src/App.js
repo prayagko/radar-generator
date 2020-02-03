@@ -23,6 +23,8 @@ function App() {
     setStats(tempStats)
   }
 
+  
+
   const deleteRow = (event) =>{
     const tempStats = [...stats]
     tempStats.splice(event.target.getAttribute('index'), 1)
