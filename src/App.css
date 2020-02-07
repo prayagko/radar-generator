@@ -45,7 +45,7 @@
 }
 
 .radar{
-  flex:1.5;
+  flex:2;
 }
 
 .field-labels{
@@ -68,7 +68,6 @@
 
 .input{
   width:0;
-  font-size: 17px;
 }
 
 .delete{
