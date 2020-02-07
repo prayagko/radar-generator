@@ -4,6 +4,7 @@
 }
 
 .app-header{
+  margin-left:20px;
   text-align: center;
   border: 2px solid;
 }
@@ -16,7 +17,9 @@
 
 .choose{
   flex:1;
-  padding-left: 10px;
+  margin-left:30px;
+  margin-right: 50px;
+  margin-bottom: 20px;
 }
 
 .options{
@@ -43,7 +46,6 @@
 
 .radar{
   flex:1.5;
-  padding-left:50px;
 }
 
 .field-labels{
@@ -66,14 +68,14 @@
 
 .input{
   width:0;
-
+  font-size: 17px;
 }
 
 .delete{
   width: 32px;
   height: 32px;
   opacity: 0.3;
-  width: 15px;
+  width: 16px;
   padding-left: 5px;
 }
 
