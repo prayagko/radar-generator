@@ -41,6 +41,14 @@ function App() {
     setStats(tempStats)
   }
 
+  const clearStats = () => {
+    const tempStats = stats.map((s)=>{
+      s.value=""
+      return s
+    })
+    setStats(tempStats)
+  }
+
   return (
     <div className="app">
       <h1 className="app-header">
@@ -98,6 +106,9 @@ function App() {
           <div className="buttons">
               <button className="add" onClick={addRow}>
                 Add
+              </button>
+              <button className="clear" onClick={clearStats}>
+                Clear
               </button>
           </div>
         </div>
