@@ -1,4 +1,4 @@
-Visulization done using D3
+Visualization done using D3
 
 https://radar-generator.netlify.app/
 
