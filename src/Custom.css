@@ -3,7 +3,7 @@
   color: #333;
 }
 
-.app-header{
+.custom-header{
   margin-left:20px;
   margin-right:20px;
   text-align: center;
@@ -91,8 +91,3 @@
   cursor: pointer;
 }
 
-.default-label, option:disabled {
-  background-color: #333;
-  color: #fff;
-  padding: 0.6em 0.5em;
-}
