@@ -8,9 +8,17 @@ function Radar(props){
 
     const[data, setData] = useState(props.data)    
 
-    useEffect(() => {  
-        setData(props.data)
+    function formatData(data){
+      
+      return data.map(d=>({'field' :d.metric, 'value':d.percentile, 'min':30,'max':100}))
+    }
+
+    useEffect(() => {
+      
+      setData(formatData(props.data))
     },[props.data])
+
+    
 
   
     function angleToCoordinate(angle, value){

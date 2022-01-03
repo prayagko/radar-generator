@@ -11,7 +11,7 @@ const attackingMidfielder =
   {
     field: "xG",
     min:"0.08",
-    max:"0.37" 
+    max:"0.37",
   },
   {
     field: "Shots",

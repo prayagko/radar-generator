@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './Custom.css';
-import * as templates from './CustomTemplates.js'
+import * as templates from './Templates.js'
 import Radar from './Radar'
 
 function Custom() {
