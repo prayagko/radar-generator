@@ -10,7 +10,7 @@ function Radar(props){
 
     function formatData(data){
       
-      return data.map(d=>({'field' :d.metric, 'value':d.percentile, 'min':30,'max':100}))
+      return data.map(d=>({'field' :d.metric, 'value':d.percentile, 'min':20,'max':100}))
     }
 
     useEffect(() => {
@@ -81,7 +81,7 @@ function Radar(props){
     const pathCoordinates = getPathCoordinates(scales)
 
     return (
-        <svg width={width+200} height={height+200}>
+        <svg width={width+50} height={height+50}>
           <path fill={props.color} d={line(pathCoordinates) } opacity = {0.7}></path>
           {scales.map((i, index) => {
             const rotate = (360/scales.length) * index

@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
-import Radar from './Radar'
+import Radar from './Radar';
+import { Alert, Spinner, Dropdown, Row, Col, Tab, Nav, Button, Card, Table} from 'react-bootstrap';
 
 import {
   useQuery,
@@ -25,7 +26,7 @@ const queryClient = new QueryClient({
 
 const colorList = ['Red','Blue','Gold','Mediumpurple','Mediumseagreen','Royalblue']
 
-const leagueList = ['premier-league','serie-a', 'la-liga', 'ligue-un', 'bundesliga', 'major-league-soccer', 'womens-super-league']
+const leagueList = ['Premier-League','Serie-A', 'La-Liga', 'Ligue-Un', 'Bundesliga', 'Major-League-Soccer', 'Womens-Super-League']
 
 const defaultTemplate = ['Non-Penalty Goals', 'npxG', 'Shots Total', 'Assists', 'xA', 'npxG+xA', 'Shot-Creating Actions', 'Passes Attempted', 'Pass Completion %',
 'Progressive Passes', 'Progressive Carries', 'Dribbles Completed', 'Touches (Att Pen)', 'Progressive Passes Rec', 'Pressures', 'Tackles', 'Interceptions', 'Blocks',
@@ -35,96 +36,136 @@ const defaultTemplate = ['Non-Penalty Goals', 'npxG', 'Shots Total', 'Assists', 
  async function fetchData(path, query){
   const response = await fetch('https://h4etkvme39.execute-api.ap-southeast-2.amazonaws.com' + path + '?' + query.key + '=' + query.value)
   const responseJson = await response.json()
+  if (!response.ok) throw responseJson
   return responseJson
+
 }
 
 
 
-function UseTeamList({selectedLeague, setSelectedTeam}){
+function UseTeamList({selectedLeague, setSelectedTeam, selectedTeam}){
 
-  const {isIdle, isLoading, isError, error, data, isFetching} = useQuery(selectedLeague, () => fetchData('/get-teams', {"key":"league","value":selectedLeague}), {enabled: !!selectedLeague,})
-
-  // if (isIdle) 
-  //   return <div>Idle</div>
+  const { isLoading, isError, error, data} = useQuery(selectedLeague, () => fetchData('/get-teams', {"key":"league","value":selectedLeague.toLowerCase()}), {enabled: !!selectedLeague,})
+  console.log({isLoading, isError, error, data})
   if (isLoading)
-    return <div>"Loading..."</div>
-  if(isError) 
-    return <div>"An error has occurred: " + {error.Error}</div>
-    
+  return (
+    <Spinner animation="border" role="status">
+      <span className="sr-only">Loading...</span>
+    </Spinner>)
+  if(isError) {
+    return (
+      <Alert variant='danger'>
+        An error has occurred: {error.message}
+      </Alert>
+    )
+  }
   return(
-    <div className="selectTeam">
-      <select onChange={(e)=>setSelectedTeam(e.target.value || '')}>
-          {data.map(t=>(
-            <option key={t.url} value={t.url}>{t.name}</option>
-          ))}
-      </select>
+    <div className='d-inline'>
+      <div style={{display: 'inline-block', marginLeft: '10px'}}>
+      <Dropdown onSelect={e=>{
+        const data = e.split(',')
+        setSelectedTeam({
+          name: data[0],
+          url: data[1]
+        })
+        }}>
+        <Dropdown.Toggle variant="danger" id="dropdown-basic">
+          {selectedTeam.name ? selectedTeam.name : "Select Team"}
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+        <Dropdown.ItemText>Select Team</Dropdown.ItemText>
+        {data.map(t => (  
+          <Dropdown.Item key={t.url} active={t.url === selectedTeam.url} eventKey={[t.name, t.url]}>{t.name}</Dropdown.Item>
+        ))} 
+        </Dropdown.Menu>
+      </Dropdown>
+      </div>
     </div>
   )
 }
 
 const getEncodedUrlPath = (url) => !!url? encodeURIComponent((new URL(url).pathname)): ''
 
-function UsePlayerList({selectedTeam, setSelectedPlayer}){
-  const {isIdle, isLoading, isError, error, data, isFetching} = useQuery(selectedTeam,()=> fetchData('/get-players', {"key":"path","value":getEncodedUrlPath(selectedTeam)}),{enabled: !!selectedTeam,})
+function UsePlayerList({selectedTeam, selectedPlayer ,setSelectedPlayer}){
+  const {isIdle, isLoading, isError, error, data} = useQuery(selectedTeam.url,()=> fetchData('/get-players', {"key":"path","value":getEncodedUrlPath(selectedTeam.url)}),{enabled: !!selectedTeam.url,})
   if (isIdle) {
     return <></>}
+  console.log({ isLoading, isError, error, data})
   if (isLoading)
-    return <div>"Loading..."</div>
+  return (
+    <Spinner animation="border" role="status" className='ml-4'>
+      <span className="sr-only">Loading...</span>
+    </Spinner>)
   if(isError) 
-    return <div>"An error has occurred: " + {error.Error}</div>
+  return (
+    <Alert variant='danger'>
+      An error has occurred: {error.message}
+    </Alert>)
   return(
-    <div className="selectPlayer">
-      <select onChange={(e)=>setSelectedPlayer(e.target.value)}>
-        {data.map(p=>(
-          <option key={p.url} value={p.url}>{p.name}</option>))}
-      </select>
+    
+    <div className='d-inline ml-4'>
+      <div style={{display: 'inline-block', marginLeft: '10px'}}>
+      <Dropdown onSelect={e=>{
+        const data = e.split(',')
+        setSelectedPlayer({
+          name: data[0],
+          url: data[1]
+        })
+        }}>
+        <Dropdown.Toggle variant="danger" id="dropdown-basic">
+          {selectedPlayer.name ? selectedPlayer.name : "Select Player"}
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+        <Dropdown.ItemText>Select Player</Dropdown.ItemText>
+        {data.map(p => (  
+          <Dropdown.Item key={p.url} active={p.url === selectedPlayer.url} eventKey={[p.name, p.url]}>{p.name}</Dropdown.Item>
+        ))} 
+        </Dropdown.Menu>
+      </Dropdown>
+      </div>
     </div>
   )
 }
 
 function UseStats({selectedPlayer, setStats, setPos, pos, setStatType, statType, selectedStats, handleSelectStat}){
-const {isIdle, isLoading, isError, error, data, isFetching} = useQuery(selectedPlayer, () =>fetchData('/get-player-data', {"key":"path","value":getEncodedUrlPath(selectedPlayer)}),{ enabled: !!selectedPlayer})
-
+const { isIdle, isLoading, isError, error, data} = useQuery(selectedPlayer.url, () =>fetchData('/get-player-data', {"key":"path","value":getEncodedUrlPath(selectedPlayer.url)}),{ enabled: !!selectedPlayer.url})
+console.log({isLoading, isError, error, data})
   if (isIdle) 
     return <></>
   if (isLoading)
-    return <span>"Loading..."</span>
+    return (
+    <Spinner animation="border" role="status">
+      <span className="sr-only">Loading...</span>
+    </Spinner>)
   if(isError) 
-    return <span>"An error has occurred: " + {error.Error}</span>
+    return (
+      <Alert variant='danger'>
+        An error has occurred: {error.message}
+      </Alert>)
   
   setStats(data || [])
-  // setPos(data[0].position)
-  return(
-    <div className="positionStats">      
-      <div className="choosePosition">
-        {data.map( s => s.position).map(p=>(   
-          <>    
-            <label id={`${p} label`} htmlFor={p}>{p}</label>
-            <input type="radio" name="positionGroup" className="positionBtn" id={p} value={p} onClick={e=>setPos(e.target.value)}/>
-          </>
-          ))}
-      </div>
-      <br/>
-      {pos&& 
-      <>
-      <div className="chooseStatsType">
-        {data.find(dat=>dat.position===pos).data.map(d=>(    
-          <>
-          <label id={`${d.type} label`} htmlFor={d.type}>{d.type}</label>
-          <input type='radio' name="statsTypeGroup" id={d.type} className= {`statsTypeBtn ${d.type===statType ? "selected": ""}`} value={d.type} onClick={e=>setStatType(e.target.value)}/>
-          </>
-          ))}
-      </div>
-      <br/>
-      <div className="selectStats">
-        {data.find(dat=>dat.position===pos).data.find(d =>(d.type === statType)).stats.map(st =>(    
-          <>
-          <button id={st.metric} className= {`stats ${selectedStats.includes(st.metric) ? "selected": ""}`} value={st.metric} onClick={(event) => handleSelectStat(st, event)}>{st.metric}</button> 
-          </>
-          ))}
-      </div>
-      </>}
-    </div>
+  return (
+    <div>
+      {!!data && data.map( s => s.position).map(p=>(     
+        <Button key={p} className="m-2" onClick={()=>setPos(p)} variant={pos !== "" && pos === p ? 'danger' : 'outline-danger'}>{p}</Button>
+      ))}
+
+      {
+        !!pos &&
+        <Card border='danger'>
+          <Card.Body>
+            <Card.Title>Select Stat Group</Card.Title>
+            {!!data && !!pos && data.find(dat=>dat.position===pos).data.map(d=>(    
+              <Button key={d.type} className="m-2" onClick={()=>setStatType(d.type)} variant={statType !== "" && statType === d.type ? 'success' : 'outline-success'}>{d.type}</Button>
+            ))}
+            <Card.Title>Select Stats</Card.Title>
+            {!!data && !!pos && !!statType && data.find(dat=>dat.position===pos).data.find(d =>(d.type === statType)).stats.map(st =>(    
+              <Button key={st.metric} className="m-2" onClick={()=>handleSelectStat(st, st.metric)} variant={selectedStats !== "" && selectedStats.includes(st.metric) ? 'info' : 'outline-info'}>{st.metric}</Button>
+            ))}
+          </Card.Body>
+        </Card>
+      }
+    </div> 
   )
 }
 
@@ -132,7 +173,7 @@ const {isIdle, isLoading, isError, error, data, isFetching} = useQuery(selectedP
 export default function App() {
   
   const [selectedLeague, setSelectedLeague] = useState('')
-  const [selectedTeam, setSelectedTeam] = useState('')
+  const [selectedTeam, setSelectedTeam] = useState({})
   const [selectedPlayer, setSelectedPlayer] = useState('');
   const[stats, setStats] = useState([])
   const[selectedStats, setSelectedStats] = useState([])
@@ -142,7 +183,7 @@ export default function App() {
   const [radarStats, setRadarStats] = useState([])
 
   const handleSelectStat = (stat, event) =>{
-    const value = event.target.value
+    const value = event
     let selected = [... selectedStats]
     let rStats = [... radarStats]
     if (selected.includes(value)){
@@ -157,8 +198,8 @@ export default function App() {
     setRadarStats(rStats || radarStats)
   }
 
-  const selectColor = (event) => {
-    setColor(event.target.value || '')
+  const selectColor = (value) => {
+    setColor(value || '')
   }
 
 
@@ -172,45 +213,104 @@ export default function App() {
 
   useEffect(() => {
     setStats([])
-    setSelectedStats([])
     setPos('')
-    setStatType('Standard Stats')
-    setRadarStats([])
   }, [selectedPlayer])
 
+  useEffect(() => {
+    setSelectedStats([])
+    setStatType('Standard Stats')
+    setRadarStats([])
+  }, [pos])
+  
   return (
     <QueryClientProvider client={queryClient}>
       <div className="app">
-        <h1 className="app-header">
-          Radar Generator
-        </h1>
-          <div className="container">
-              <div className="choose">
-                <div className = "options">
-                  <label className="color-label">
-                    Color
-                  </label>
-                  <select className="color-select" onChange={selectColor}>
-                    {colorList.map(c =>(  
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className= "select">
-                  <div className="selectLeague">
-                      <select onChange= {(e)=>setSelectedLeague(e.target.value)}>
-                          {leagueList.map(l=>(
-                        <option key={l} value={l}>{l}</option>))}
-                      </select>
+      <div className='app-header'>
+        <h1 class="title">Radar<span>Generator</span></h1>
+      </div>
+        <div style={{margin: '10px 20px'}}>
+          <Row>
+            <Col className="col-5">
+              <div className = "options'">
+              <Card border="light">
+              <Card.Header >Select Player</Card.Header>
+                <div className=' d-inline m-2'>
+                  <div style={{display: 'inline-block', marginLeft: '10px', marginTop: '5px'}}>
+                  <Dropdown onSelect={(e)=>setSelectedLeague(e)}>
+                    <Dropdown.Toggle variant="danger" id="dropdown-basic">
+                      {selectedLeague ? selectedLeague : "Select league"}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                    <Dropdown.ItemText>Select league</Dropdown.ItemText>
+                    {leagueList.map(c => (  
+                      <Dropdown.Item key={c} active={c === selectedLeague} eventKey={c}>{c}</Dropdown.Item>
+                    ))} 
+                    </Dropdown.Menu>
+                  </Dropdown>
                   </div>
-                  {!!selectedLeague && <UseTeamList setSelectedTeam={setSelectedTeam} selectedLeague={selectedLeague}></UseTeamList>}
-                  <UsePlayerList selectedTeam={selectedTeam} setSelectedPlayer={setSelectedPlayer}></UsePlayerList>
+                </div>
+
+                <div className='m-2'>
+                  {!!selectedLeague && <UseTeamList selectedTeam={selectedTeam} setSelectedTeam={setSelectedTeam} selectedLeague={selectedLeague}></UseTeamList>}
+                  <UsePlayerList selectedTeam={selectedTeam} selectedPlayer={selectedPlayer} setSelectedPlayer={setSelectedPlayer}></UsePlayerList>
+                </div>
+
+                <div className='m-2'>
                   <UseStats selectedPlayer={selectedPlayer} setPos={setPos} setStats={setStats} pos={pos} setStatType={setStatType} statType={statType} selectedStats={selectedStats} handleSelectStat={handleSelectStat}></UseStats>
                 </div>
-            <div className="radar">
-              <Radar data={radarStats} color={color}/>
-            </div>
-          </div>
+              
+              </Card>
+              </div>
+            </Col>
+            <Col>
+            {
+              radarStats.length > 0 && (
+                <div style={{margin:'0 auto'}} className="radar">
+                   <div className='radar-header'>
+                   <div className="color-dropdown">
+                      <Dropdown onSelect={selectColor}>
+                        <Dropdown.Toggle variant="outline-dark" id="dropdown-basic">
+                          {color}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                        <Dropdown.ItemText>Select Color</Dropdown.ItemText>
+                        {colorList.map(c => (  
+                          <Dropdown.Item key={c} active={c === color} eventKey={c}>{c}</Dropdown.Item>
+                        ))} 
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </div>
+                      <div>
+                        <span style={{color:'black', fontSize:'2em', fontWeight:900}}>{selectedPlayer.name}</span>
+                        <span style={{color:color, fontSize:'2em', fontWeight:900}}> - {selectedTeam.name}</span>
+                      </div>
+                  </div>
+                    <Radar data={radarStats} color={color}/>
+                    <Table responsive striped bordered hover variant="dark">
+                      <thead>
+                        <tr>
+                          {
+                            radarStats.map(res => (
+                              <th>{res.metric}</th>
+                            ))
+                          }
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          {
+                            radarStats.map(res => (
+                              <td>{res.per90}</td>
+                            ))
+                          }
+                        </tr>
+                      </tbody>
+                    </Table>
+                </div>
+              )
+            }
+            </Col>
+          </Row>
         </div>
       </div>
     </QueryClientProvider>
