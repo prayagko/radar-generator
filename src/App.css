@@ -14,6 +14,10 @@ body{
   margin-top:20px;
 }
 
+.columns{
+  padding-top:20px
+}
+
 .title {
   font-weight:900;
   color:black;
@@ -35,6 +39,3 @@ body{
   color: white;
 }
 
-.radar-header{
-  color: #FFF;
-}
