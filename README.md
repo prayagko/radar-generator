@@ -2,15 +2,15 @@
 
 https://radar-generator.netlify.app/
 
-Make Statsbomb like radars for (almost) any football players in the big 5 Euro leagues + MLS + FA WSL
+Make Statsbomb-like radars for (almost) any football players in the big 5 Euro leagues + MLS + FA WSL
 
 Data scraped in real time from FBref
 
-Tech Stack- React, D3
-Backend hosted in AWS Lambda
+Tech Stack- React, D3, backend on AWS Lambda
 
 
-<img width="629" alt="Screen Shot 2021-11-17 at 2 42 55 am" src="https://user-images.githubusercontent.com/43520453/142017479-7f65467f-68d3-458f-b356-6ea3e34286ff.png">
+<img width="724" alt="radar" src="https://user-images.githubusercontent.com/43520453/148329885-575f742e-64c0-4cfc-b38e-6fd3cbe187ba.png">
+
 
 ------------
 
