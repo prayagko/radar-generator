@@ -74,7 +74,7 @@ function UseTeamList({ selectedLeague, setSelectedTeam, selectedTeam }) {
   if (isLoading)
     return (
       <Spinner animation='border' role='status'>
-        <span className='sr-only'>Loading...</span>
+        <span className='sr-only'></span>
       </Spinner>
     );
   if (isError) {
@@ -132,7 +132,7 @@ function UsePlayerList({ selectedTeam, selectedPlayer, setSelectedPlayer }) {
   if (isLoading)
     return (
       <Spinner animation='border' role='status' className='ml-4'>
-        <span className='sr-only'>Loading...</span>
+        <span className='sr-only'></span>
       </Spinner>
     );
   if (isError)
@@ -193,14 +193,13 @@ function UseStats({
   if (isLoading)
     return (
       <Spinner animation='border' role='status'>
-        <span className='sr-only'>Loading...</span>
+        <span className='sr-only'></span>
       </Spinner>
     );
   if (isError)
     return (
       <Alert variant='danger'>An error has occurred: {error.message}</Alert>
     );
-
   setStats(data || []);
   return (
     <>
@@ -327,7 +326,7 @@ export default function App() {
           </h1>
         </div>
         <Row>
-          <Col className='col col-md-5'>
+          <Col className='col col-lg-5'>
             <div className='options'>
               <Card border='dark'>
                 <Card.Header>Player Picker</Card.Header>
