@@ -3,82 +3,79 @@
   color: #333;
 }
 
-.custom-header{
-  margin-left:20px;
-  margin-right:20px;
+.custom-header {
+  margin-left: 20px;
+  margin-right: 20px;
   text-align: center;
   border: 2px solid;
 }
 
-.container{
-  display:flex;
+.container {
+  display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 }
 
-.choose{
-  flex:1;
-  margin-left:30px;
+.choose {
+  flex: 1;
+  margin-left: 30px;
   margin-right: 50px;
   margin-bottom: 20px;
 }
 
-.options{
+.options {
   border: 1px solid;
   padding: 5px 3px;
   margin-bottom: 10px;
 }
 
-.template-label{
+.template-label {
   padding-left: 5px;
   padding-right: 8px;
-
 }
 
-.color-label{
-  padding-left:25px;
+.color-label {
+  padding-left: 25px;
   padding-right: 8px;
 }
 
-.fields{
-  margin-top:5px;
-
+.fields {
+  margin-top: 5px;
 }
 
-.radar{
-  flex:2;
+.radar {
+  flex: 2;
 }
 
-.field-labels{
+.field-labels {
   display: flex;
   flex-direction: row;
 }
 
-.input-row{
+.input-row {
   display: flex;
   flex-direction: row;
 }
 
-.stat{
+.stat {
   flex: 3;
 }
 
-.val{
-  flex:1;
+.val {
+  flex: 1;
 }
 
-.input{
-  width:0;
+.input {
+  width: 0;
 }
 
-.buttons{
+.buttons {
   display: flex;
   justify-content: space-between;
   padding-right: 16px;
-  
 }
 
-.delete{
+.delete {
   width: 32px;
   height: 32px;
   opacity: 0.3;
@@ -90,4 +87,3 @@
   opacity: 1;
   cursor: pointer;
 }
-
