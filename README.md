@@ -1,3 +1,5 @@
+*Fbref changed their site so the scraping is not working. Not sure when i'll fix. :(*
+
 ## Radar Generator
 
 https://radar-generator.netlify.app/
